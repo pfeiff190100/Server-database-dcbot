@@ -32,13 +32,13 @@ class authenticate(commands.Cog):
             if(img_data != None):
                 response = urllib.request.urlopen(img_data)
                 with open('image.jpg', 'wb') as f:
-                    f.write(response.file.read())    
+                    f.write(response.file.read())   
+                    file = discord.File("image.jpg") 
                 print("success")
             else:
                 print("None")
                             
             """embed for displaying infos"""
-            file = discord.File("image.jpg")
 
             embedVar = discord.Embed(title="Server", description="motd: " + status.description, color=0xff6ec7)
             embedVar.set_image(url='attachment://image.jpg')
