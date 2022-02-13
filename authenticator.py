@@ -50,12 +50,14 @@ class authenticate(commands.Cog):
                 await ctx.channel.send(embed=embedVar)
 
         elif message == "all-players":
-            counter = 1
+            server_id = 1
             ips = {}
             sorted_dict = {}
+            key_arr = []
+            listvalue = 0
             #int(editdatabase.Databasemanager().lengh()
-            while (counter < 250):
-                hostname = editdatabase.Databasemanager().get(counter)
+            while (server_id < 50):
+                hostname = editdatabase.Databasemanager().get(server_id)
                 try:
                     server = MinecraftServer.lookup(hostname + ":25565")
                     status = server.status()
@@ -64,14 +66,16 @@ class authenticate(commands.Cog):
 
                 if(int(status.players.online) > 0):
                     ips[f"{hostname},{status.version.name}"] = status.players.online
-                counter += 1
+                server_id += 1
 
             sorted_keys = sorted(ips, key=ips.get, reverse=True)
             for w in sorted_keys:
                 sorted_dict[w] = ips[w]
 
             for key in sorted_dict.keys():
-                await ctx.channel.send(f"key: {key}, value: {sorted_dict[key]}")
+                key_arr.append(key)
+            
+            await ctx.channel.send(f"{listvalue + 1}. IP: {key_arr[listvalue].split(',')[0]} | version: {key_arr[listvalue].split(',')[1]} | players: {sorted_dict[key_arr[listvalue]]}")
 
 
         else:
