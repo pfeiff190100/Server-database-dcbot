@@ -15,7 +15,7 @@ class authenticate(commands.Cog):
             tries = 0
             message = await ctx.channel.send("checking hostnames....")
             while(player_online < 1):
-                hostname = editdatabase.Databasemanager(random.randint(0, int(editdatabase.Databasemanager(2).lengh()))).get()
+                hostname = editdatabase.Databasemanager().get(random.randint(0, int(editdatabase.Databasemanager().lengh())))
                 try:
                     server = MinecraftServer.lookup(hostname + ":25565")
                     status = server.status()
@@ -34,9 +34,7 @@ class authenticate(commands.Cog):
                 with open('image.jpg', 'wb') as f:
                     f.write(response.file.read())   
                     file = discord.File("image.jpg") 
-                print("success")
-            else:
-                print("None")
+
                             
             """embed for displaying infos"""
 
@@ -51,8 +49,30 @@ class authenticate(commands.Cog):
             else:
                 await ctx.channel.send(embed=embedVar)
 
-        elif message == "list-online":
-            pass
+        elif message == "all-players":
+            counter = 1
+            ips = {}
+            sorted_dict = {}
+            #int(editdatabase.Databasemanager().lengh()
+            while (counter < 250):
+                hostname = editdatabase.Databasemanager().get(counter)
+                try:
+                    server = MinecraftServer.lookup(hostname + ":25565")
+                    status = server.status()
+                except:
+                    pass
+
+                if(int(status.players.online) > 0):
+                    ips[f"{hostname},{status.version.name}"] = status.players.online
+                counter += 1
+
+            sorted_keys = sorted(ips, key=ips.get, reverse=True)
+            for w in sorted_keys:
+                sorted_dict[w] = ips[w]
+
+            for key in sorted_dict.keys():
+                await ctx.channel.send(f"key: {key}, value: {sorted_dict[key]}")
+
 
         else:
             await ctx.channel.send("missing arguments (rand)")
