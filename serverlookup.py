@@ -1,10 +1,10 @@
 from mcstatus import MinecraftServer
 
 class Ping():
-    def __init__(self, _threads, _hostname, authenticator) -> None:
+    def __init__(self, _threads, _hostname, cmd) -> None:
         self.threads = _threads
         self.hostname = _hostname
-        self.tcount = authenticator
+        self.tcount = cmd
 
     def main(self):
         self.ping()
