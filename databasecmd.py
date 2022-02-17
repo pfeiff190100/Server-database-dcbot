@@ -83,10 +83,10 @@ class CMD():
         if str(reaction.emoji) == "⬅️":
             if self.page != 0:
                 self.page -= 1
-                self.updateembed()
+                await self.updateembed()
         if str(reaction.emoji) == "➡️":
             self.page += 1
-            self.updateembed()
+            await self.updateembed()
 
     async def updateembed(self):
         out = ""
