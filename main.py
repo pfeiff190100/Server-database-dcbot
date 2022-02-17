@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import authenticator
-from discord.utils import get
 
 cogs = [authenticator]
 
@@ -16,7 +15,8 @@ async def on_ready():
 @client.event
 async def on_reaction_add(reaction, user):
     if user != client.user:
-        pass
+        if str(reaction) == "⬅️" or str(reaction) == "➡️":
+            pass
         
 
 for i in range(len(cogs)):

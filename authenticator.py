@@ -24,7 +24,7 @@ class authenticate(commands.Cog):
         host_count = 1
         threadlengh = 10
         #int(editdatabase.Databasemanager().lengh())
-        while host_count < 1000:
+        while host_count < 5000:
             while self.threadcounter > 100:
                 time.sleep(0.1)
             outadresses.append(editdatabase.Databasemanager().get(host_count))
