@@ -48,8 +48,7 @@ class authenticate(commands.Cog):
         await msg.add_reaction("➡️")
 
     async def on_reaction(self, reaction, user):
-        if reaction.message.author == "MC-servers":
-            print("bot message")
+        print(reaction.message.author)
 
 def setup(client):
     client.add_cog(authenticate(client))
