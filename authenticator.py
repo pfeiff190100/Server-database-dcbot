@@ -48,9 +48,9 @@ class authenticate(commands.Cog):
         await msg.add_reaction("➡️")
 
     async def on_reaction(self, reaction, user):
-        print(reaction.message)
-        msg = reaction.message
-        print(msg.author)
+        if(reaction.message.author == "MC-servers#6007"):
+            print("bot user")
+            databasecmd.CMD.checkreaction(reaction, user)
 
 def setup(client):
     client.add_cog(authenticate(client))
