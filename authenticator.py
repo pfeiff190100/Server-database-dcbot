@@ -48,7 +48,7 @@ class authenticate(commands.Cog):
         await msg.add_reaction("➡️")
 
     async def on_reaction(self, reaction, user):
-        print(reaction.message())
+        print(reaction.message)
 
 def setup(client):
     client.add_cog(authenticate(client))
