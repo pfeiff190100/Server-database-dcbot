@@ -67,7 +67,6 @@ class CMD():
                 self.threadcounter += 1
                 outadresses.clear()
             host_count += 1
-        print(self.data)
         if(message == "reverse"):
             self.data.sort(key=lambda x:x[2], reverse=True)
         counter = self.page * 10
