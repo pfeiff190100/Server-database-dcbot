@@ -47,6 +47,9 @@ class CMD():
             await ctx.channel.send(embed=embedVar)
     
     async def searchservers(self, ctx):
+        self.page = 0
+        self.data.clear()
+        
         counter = 0
         pagelengh = 0
         out = ""
@@ -67,7 +70,7 @@ class CMD():
         print(self.data)
             
         self.data.sort(key=lambda x:x[2], reverse=True)
-        counter = self.page * 5
+        counter = self.page * 10
         """embed for displaying infos"""
         embedVar = discord.Embed(title="Servers", description="A list of servers with players online", color=0xFF7373)
         while(counter < len(self.data) and pagelengh < 10):
@@ -91,7 +94,7 @@ class CMD():
     async def updateembed(self):
         out = ""
         pagelengh = 0
-        counter = self.page * 5
+        counter = self.page * 10
         embededit = discord.Embed(title="Servers", description="A list of servers with players online", color=0xFF7373)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1]} | players: {self.data[counter][2]} \n"
