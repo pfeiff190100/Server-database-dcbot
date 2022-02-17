@@ -24,7 +24,7 @@ class authenticate(commands.Cog):
         host_count = 1
         threadlengh = 10
         #int(editdatabase.Databasemanager().lengh())
-        while host_count < 5000:
+        while host_count < 1000:
             while self.threadcounter > 100:
                 time.sleep(0.1)
             outadresses.append(editdatabase.Databasemanager().get(host_count))
@@ -34,6 +34,7 @@ class authenticate(commands.Cog):
                 self.threadcounter += 1
                 outadresses.clear()
             host_count += 1
+        print(self.data)
             
         self.data.sort(key=lambda x:x[2], reverse=True)
         counter = page * 5
@@ -47,6 +48,11 @@ class authenticate(commands.Cog):
         msg = await ctx.channel.send(embed=embedVar)   
         await msg.add_reaction("⬅️")
         await msg.add_reaction("➡️")
+
+    async def on_reaction(self, reaction, user):
+        if reaction.message.channel.id != int(self._clear_channel_id[2:-1]):
+            return
+        await databasecmd.CMD.checkreaction(reaction, user)
 
 def setup(client):
     client.add_cog(authenticate(client))

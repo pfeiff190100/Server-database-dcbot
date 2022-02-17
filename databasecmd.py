@@ -6,7 +6,7 @@ class CMD():
     def __init__(self) -> None:
         pass
 
-    async def getrandserver(ctx):
+    async def getrandserver(self, ctx):
         player_online = 0
         tries = 0
         message = await ctx.channel.send("checking hostnames....")
@@ -42,3 +42,9 @@ class CMD():
             await ctx.channel.send(embed=embedVar, file= file)
         else:
             await ctx.channel.send(embed=embedVar)
+    
+    async def checkreaction(self, reaction, user):
+        if str(reaction.emoji) == "⬅️":
+            print("page left")
+        if str(reaction.emoji) == "➡️":
+            print("page right")

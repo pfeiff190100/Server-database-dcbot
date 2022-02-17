@@ -15,8 +15,7 @@ async def on_ready():
 @client.event
 async def on_reaction_add(reaction, user):
     if user != client.user:
-        if str(reaction) == "⬅️" or str(reaction) == "➡️":
-            pass
+        await client.cogs["authenticate"].on_reaction(reaction, user)
         
 
 for i in range(len(cogs)):
