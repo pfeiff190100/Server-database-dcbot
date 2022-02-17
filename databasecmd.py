@@ -49,7 +49,7 @@ class CMD():
     async def searchservers(self, ctx):
         self.page = 0
         self.data.clear()
-        
+
         counter = 0
         pagelengh = 0
         out = ""
@@ -87,9 +87,11 @@ class CMD():
             if self.page != 0:
                 self.page -= 1
                 await self.updateembed()
+                await reaction.message.remove_reaction(reaction.emoji, user)
         if str(reaction.emoji) == "➡️":
             self.page += 1
             await self.updateembed()
+            await reaction.message.remove_reaction(reaction.emoji, user)
 
     async def updateembed(self):
         out = ""
