@@ -1,4 +1,3 @@
-from turtle import right
 import discord
 from discord.ext import commands
 import authenticator
@@ -15,13 +14,10 @@ async def on_ready():
     print('Ready!\n')
 
 @client.event
-async def on_reaction(reaction, user):
-    print(f"added reaction {reaction.emoji}")
+async def on_reaction_add(reaction, user):
     if user != client.user:
-        if reaction.emoji == "⬅️":
-            print("left")
-        if reaction.emoji == "➡️":
-            print("right")
+        pass
+        
 
 for i in range(len(cogs)):
     cogs[i].setup(client)

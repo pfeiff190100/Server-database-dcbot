@@ -1,11 +1,14 @@
-import databasecmd ,editdatabase, discord
+import databasecmd ,serverlookup, discord, time, editdatabase
 from discord.ext import commands
-from mcstatus import MinecraftServer
+from threading import Thread
+
 
 
 class authenticate(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.data = []
+        self.threadcounter = 0
         
     @commands.command()
     async def rand (self, ctx):
@@ -13,46 +16,37 @@ class authenticate(commands.Cog):
   
     @commands.command()
     async def online (self, ctx):
-        server_id = 1
         page = 0
         counter = 0
-        lenghcount = 0
+        pagelengh = 0
         out = ""
-        data = []
-        #int(editdatabase.Databasemanager().lengh()
-        while (server_id < 50):
-            hostname = editdatabase.Databasemanager().get(server_id)
-            try:
-                server = MinecraftServer.lookup(hostname + ":25565")
-                status = server.status()
-                player_online = status.players.online
-            except:
-                pass    
-            if(player_online > 0):
-                data.append((hostname, status.version.name, status.players.online))
-            server_id += 1
+        outadresses = []
+        host_count = 1
+        threadlengh = 10
+        #int(editdatabase.Databasemanager().lengh())
+        while host_count < 1000:
+            while self.threadcounter > 100:
+                time.sleep(0.1)
+            outadresses.append(editdatabase.Databasemanager().get(host_count))
+            if len(outadresses) >= threadlengh:
+                lookup = serverlookup.Ping(threadlengh, outadresses.copy(), self)
+                Thread(target=lookup.main).start()
+                self.threadcounter += 1
+                outadresses.clear()
+            host_count += 1
             
-        data.sort(key=lambda x:x[2], reverse=True)
+        self.data.sort(key=lambda x:x[2], reverse=True)
         counter = page * 5
         """embed for displaying infos"""
         embedVar = discord.Embed(title="Servers", description="A list of servers with players online")
-        while(counter < len(data) and lenghcount < 5):
-            out += f"{counter + 1}. IP: {data[counter][0]} | version: {data[counter][1]} | players: {data[counter][2]} \n"
+        while(counter < len(self.data) and pagelengh < 10):
+            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1]} | players: {self.data[counter][2]} \n"
             counter += 1
-            lenghcount += 1
+            pagelengh += 1
         embedVar.add_field(name=f"Page: {page + 1}", value=out ,inline=False)
         msg = await ctx.channel.send(embed=embedVar)   
         await msg.add_reaction("⬅️")
         await msg.add_reaction("➡️")
-
-                    
-    @commands.command()
-    async def clear (self, ctx):
-        def is_me(m):
-            return m.author == self.client.user
-        
-        deleted = await ctx.channel.purge(limit=200, check=is_me)
-        await ctx.channel.send('Deleted {} message(s)'.format(len(deleted)))
 
 def setup(client):
     client.add_cog(authenticate(client))
