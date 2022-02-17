@@ -11,8 +11,8 @@ class authenticate(commands.Cog):
         await self.cmd.getrandserver(ctx)        
   
     @commands.command()
-    async def online (self, ctx):
-        await self.cmd.searchservers(ctx)
+    async def online (self, ctx, message="top"):
+        await self.cmd.searchservers(ctx, message)
 
     async def on_reaction(self, reaction, user):
         msg = reaction.message

@@ -46,7 +46,7 @@ class CMD():
         else:
             await ctx.channel.send(embed=embedVar)
     
-    async def searchservers(self, ctx):
+    async def searchservers(self, ctx, message):
         self.page = 0
         self.data.clear()
 
@@ -68,8 +68,8 @@ class CMD():
                 outadresses.clear()
             host_count += 1
         print(self.data)
-            
-        self.data.sort(key=lambda x:x[2], reverse=True)
+        if(message == "reverse"):
+            self.data.sort(key=lambda x:x[2], reverse=True)
         counter = self.page * 10
         """embed for displaying infos"""
         embedVar = discord.Embed(title="Servers", description="A list of servers with players online", color=0xFF7373)
