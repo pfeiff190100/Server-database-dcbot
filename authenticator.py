@@ -2,8 +2,6 @@ import databasecmd ,serverlookup, discord, time, editdatabase
 from discord.ext import commands
 from threading import Thread
 
-
-
 class authenticate(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -50,7 +48,7 @@ class authenticate(commands.Cog):
         await msg.add_reaction("➡️")
 
     async def on_reaction(self, reaction, user):
-        print(reaction.user)
+        print(reaction.message())
 
 def setup(client):
     client.add_cog(authenticate(client))
