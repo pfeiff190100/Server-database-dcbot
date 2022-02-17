@@ -50,7 +50,7 @@ class authenticate(commands.Cog):
     async def on_reaction(self, reaction, user):
         msg = reaction.message
         print(msg.author)
-        if(msg.author == "MC-servers#6007"):
+        if(str(msg.author) == "MC-servers#6007"):
             print("bot user")
             databasecmd.CMD.checkreaction(reaction, user)
 
