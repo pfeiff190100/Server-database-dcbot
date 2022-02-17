@@ -5,6 +5,7 @@ import editdatabase, serverlookup
 class CMD():
     def __init__(self) -> None:
         self.data = []
+        self.threadcounter = 0
 
     async def getrandserver(ctx):
         player_online = 0

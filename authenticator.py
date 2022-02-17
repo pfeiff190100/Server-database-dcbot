@@ -4,8 +4,6 @@ from discord.ext import commands
 class authenticate(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.data = []
-        self.threadcounter = 0
         self.cmd = databasecmd.CMD()
         
     @commands.command()
