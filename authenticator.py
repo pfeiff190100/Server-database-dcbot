@@ -1,7 +1,5 @@
-from turtle import color
-import databasecmd ,serverlookup, discord, time, editdatabase
+import databasecmd
 from discord.ext import commands
-from threading import Thread
 
 class authenticate(commands.Cog):
     def __init__(self, client):
