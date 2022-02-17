@@ -6,7 +6,7 @@ class CMD():
     def __init__(self) -> None:
         pass
 
-    async def getrandserver(self, ctx):
+    async def getrandserver(ctx):
         player_online = 0
         tries = 0
         message = await ctx.channel.send("checking hostnames....")

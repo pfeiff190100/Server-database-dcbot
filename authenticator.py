@@ -50,9 +50,7 @@ class authenticate(commands.Cog):
         await msg.add_reaction("➡️")
 
     async def on_reaction(self, reaction, user):
-        if reaction.message.channel.id != int(self._clear_channel_id[2:-1]):
-            return
-        await databasecmd.CMD.checkreaction(reaction, user)
+        print(reaction.user)
 
 def setup(client):
     client.add_cog(authenticate(client))
