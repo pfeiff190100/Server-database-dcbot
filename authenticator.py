@@ -52,7 +52,7 @@ class authenticate(commands.Cog):
         print(msg.author)
         if(str(msg.author) == "MC-servers#6007"):
             print("bot user")
-            databasecmd.CMD().checkreaction(reaction, user)
+            await databasecmd.CMD().checkreaction(reaction, user)
 
 def setup(client):
     client.add_cog(authenticate(client))
