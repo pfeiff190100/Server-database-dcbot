@@ -9,7 +9,7 @@ class CMD():
         self.page = 0
         self.msg = ""
 
-    async def getrandserver(ctx):
+    async def getrandserver(self, ctx):
         player_online = 0
         tries = 0
         message = await ctx.channel.send("checking hostnames....")
