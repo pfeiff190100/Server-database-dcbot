@@ -50,15 +50,19 @@ class CMD():
         self.page = 0
         self.data.clear()
 
-        counter = 0
-        pagelengh = 0
         out = ""
         outadresses = []
+
+        counter = 0
+        pagelengh = 0
         host_count = 1
         threadlengh = 10
+        databaselengh = 5000
+
+        infomsg = await ctx.channel.send("searching for servers with players online")
         #int(editdatabase.Databasemanager().lengh())
-        while host_count < 5000:
-            while self.threadcounter > 100:
+        while host_count < databaselengh:
+            while self.threadcounter > 200:
                 time.sleep(0.1)
             outadresses.append(editdatabase.Databasemanager().get(host_count))
             if len(outadresses) >= threadlengh:
@@ -67,10 +71,12 @@ class CMD():
                 self.threadcounter += 1
                 outadresses.clear()
             host_count += 1
+        infomsg.delete()
         if(message == "reverse"):
             self.data.sort(key=lambda x:x[2])
         elif message == "top":
             self.data.sort(key=lambda x:x[2], reverse=True)
+
         counter = self.page * 10
         """embed for displaying infos"""
         embedVar = discord.Embed(title="Servers", description="A list of servers with players online", color=0xFF7373)
@@ -80,6 +86,7 @@ class CMD():
             pagelengh += 1
         embedVar.add_field(name=f"Page: {self.page + 1}", value=out ,inline=False)
         self.msg = await ctx.channel.send(embed=embedVar)   
+        print(f"found {len(self.data)} servers with players online out of {databaselengh}")
         await self.msg.add_reaction("⬅️")
         await self.msg.add_reaction("➡️")
 
@@ -98,7 +105,7 @@ class CMD():
         out = ""
         pagelengh = 0
         counter = self.page * 10
-        embededit = discord.Embed(title="Servers", description="A list of servers with players online", color=0xFF7373)
+        embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with players online", color=0xFF7373)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1]} | players: {self.data[counter][2]} \n"
             counter += 1
