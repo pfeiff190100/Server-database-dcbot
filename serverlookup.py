@@ -18,11 +18,11 @@ class Ping():
             try:
                 server = MinecraftServer.lookup(self.hostname[counter] + ":25565")
                 status = server.status()
-                player_online = status.players.online
+                player_online = int(status.players.online)
             except:
                 pass    
             if(player_online > 0):
-                data.append((self.hostname[counter], status.version.name, status.players.online))
+                data.append((self.hostname[counter], status.version.name, player_online))
             counter += 1
         if data:  
             for i in data:

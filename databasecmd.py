@@ -71,24 +71,32 @@ class CMD():
                 self.threadcounter += 1
                 outadresses.clear()
             host_count += 1
-        infomsg.delete()
+        await infomsg.edit(content="waiting for all threads to finisch")
+
+        while True:
+            if self.threadcounter == 0:
+                print(f"found {len(self.data)} servers with players online out of {databaselengh}")
+                break
+        
+        await infomsg.delete()
+
         if(message == "reverse"):
-            self.data.sort(key=lambda x:x[2])
+            self.data.sort(key=lambda x:int(x[2]))
         elif message == "top":
-            self.data.sort(key=lambda x:x[2], reverse=True)
+            self.data.sort(key=lambda x:int(x[2]), reverse=True)
 
         counter = self.page * 10
         """embed for displaying infos"""
-        embedVar = discord.Embed(title="Servers", description="A list of servers with players online", color=0xFF7373)
+        embedVar = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with players online", color=0xFF7373)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1]} | players: {self.data[counter][2]} \n"
             counter += 1
             pagelengh += 1
         embedVar.add_field(name=f"Page: {self.page + 1}", value=out ,inline=False)
         self.msg = await ctx.channel.send(embed=embedVar)   
-        print(f"found {len(self.data)} servers with players online out of {databaselengh}")
         await self.msg.add_reaction("⬅️")
         await self.msg.add_reaction("➡️")
+        
 
     async def checkreaction(self, reaction, user):
         if str(reaction.emoji) == "⬅️":
@@ -97,8 +105,9 @@ class CMD():
                 await self.updateembed()
                 await reaction.message.remove_reaction(reaction.emoji, user)
         if str(reaction.emoji) == "➡️":
-            self.page += 1
-            await self.updateembed()
+            if (self.page + 1) * 10 < len(self.data) - 1:
+                self.page += 1
+                await self.updateembed()
             await reaction.message.remove_reaction(reaction.emoji, user)
 
     async def updateembed(self):
