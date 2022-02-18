@@ -68,6 +68,8 @@ class CMD():
                 outadresses.clear()
             host_count += 1
         if(message == "reverse"):
+            self.data.sort(key=lambda x:x[2])
+        elif message == "top":
             self.data.sort(key=lambda x:x[2], reverse=True)
         counter = self.page * 10
         """embed for displaying infos"""
