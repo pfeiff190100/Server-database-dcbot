@@ -9,14 +9,15 @@ class authenticate(commands.Cog):
         
     @commands.command()
     async def rand (self, ctx):
-        Thread(target=await self.cmd.getrandserver(ctx)).start()    
+       await self.cmd.getrandserver(ctx)
   
     @commands.command()
     async def online (self, ctx, message="top"):
-        Thread(target=await self.cmd.searchservers(ctx, message)).start()
+        await self.cmd.searchservers(ctx, message)
 
     @commands.command()
     async def details (self, ctx, message):
+        print("details")
         await self.cmd.details(ctx, message)
 
     async def on_reaction(self, reaction, user):
