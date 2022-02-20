@@ -80,6 +80,11 @@ class CMD():
         self.msg = await ctx.channel.send(embed=embedVar)   
         await self.msg.add_reaction("⬅️")
         await self.msg.add_reaction("➡️")
+        time.sleep(300)
+        await self.msg.delete()
+
+    async def details(self, ctx, message):
+        print(message)
 
     async def checkreaction(self, reaction, user):
         if str(reaction.emoji) == "⬅️":

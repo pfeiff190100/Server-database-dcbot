@@ -14,6 +14,10 @@ class authenticate(commands.Cog):
     async def online (self, ctx, message="top"):
         await self.cmd.searchservers(ctx, message)
 
+    @commands.command()
+    async def details (self, ctx, message):
+        await self.cmd.details(ctx, message)
+
     async def on_reaction(self, reaction, user):
         msg = reaction.message
         if(str(msg.author) == "MC-servers#6007"):
