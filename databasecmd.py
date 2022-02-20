@@ -113,7 +113,7 @@ class CMD():
             await msg.edit(content=f"invalid ip {message}")     
         print(f"collecting information of {message}")
         
-        await message.delete()
+        await msg.delete()
         """gets the favicon of the minecraft server"""
         img_data = status.favicon
         if(img_data != None):
