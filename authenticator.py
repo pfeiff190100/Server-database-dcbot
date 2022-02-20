@@ -1,5 +1,6 @@
 import databasecmd
 from discord.ext import commands
+from threading import Thread
 
 class authenticate(commands.Cog):
     def __init__(self, client):
@@ -8,11 +9,11 @@ class authenticate(commands.Cog):
         
     @commands.command()
     async def rand (self, ctx):
-        await self.cmd.getrandserver(ctx)        
+        Thread(target=await self.cmd.getrandserver(ctx)).start()    
   
     @commands.command()
     async def online (self, ctx, message="top"):
-        await self.cmd.searchservers(ctx, message)
+        Thread(target=await self.cmd.searchservers(ctx, message)).start()
 
     @commands.command()
     async def details (self, ctx, message):

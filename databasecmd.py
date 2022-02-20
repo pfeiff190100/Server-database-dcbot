@@ -9,7 +9,7 @@ class CMD():
         self.page = 0
         self.msg = ""
 
-    async def getrandserver(ctx):
+    async def getrandserver(self, ctx):
         player_online = 0
         tries = 0
         message = await ctx.channel.send("checking hostnames....")
@@ -50,15 +50,19 @@ class CMD():
         self.page = 0
         self.data.clear()
 
-        counter = 0
-        pagelengh = 0
         out = ""
         outadresses = []
+
+        counter = 0
+        pagelengh = 0
         host_count = 1
         threadlengh = 10
+        databaselengh = 5000
 
-        while host_count < int(editdatabase.Databasemanager().lengh()):
-            while self.threadcounter > 100:
+        infomsg = await ctx.channel.send("searching for servers with players online")
+        #int(editdatabase.Databasemanager().lengh())
+        while host_count < databaselengh:
+            while self.threadcounter > 200:
                 time.sleep(0.1)
             outadresses.append(editdatabase.Databasemanager().get(host_count))
             if len(outadresses) >= threadlengh:
@@ -67,11 +71,23 @@ class CMD():
                 self.threadcounter += 1
                 outadresses.clear()
             host_count += 1
+        await infomsg.edit(content="waiting for all threads to finisch")
+
+        while True:
+            if self.threadcounter == 0:
+                print(f"found {len(self.data)} servers with players online out of {databaselengh}")
+                break
+        
+        await infomsg.delete()
+
         if(message == "reverse"):
-            self.data.sort(key=lambda x:x[2], reverse=True)
+            self.data.sort(key=lambda x:int(x[2]))
+        elif message == "top":
+            self.data.sort(key=lambda x:int(x[2]), reverse=True)
+
         counter = self.page * 10
         """embed for displaying infos"""
-        embedVar = discord.Embed(title="Servers", description="A list of servers with players online", color=0xFF7373)
+        embedVar = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with players online", color=0xFF7373)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1]} | players: {self.data[counter][2]} \n"
             counter += 1
@@ -93,15 +109,16 @@ class CMD():
                 await self.updateembed()
                 await reaction.message.remove_reaction(reaction.emoji, user)
         if str(reaction.emoji) == "➡️":
-            self.page += 1
-            await self.updateembed()
+            if (self.page + 1) * 10 < len(self.data) - 1:
+                self.page += 1
+                await self.updateembed()
             await reaction.message.remove_reaction(reaction.emoji, user)
 
     async def updateembed(self):
         out = ""
         pagelengh = 0
         counter = self.page * 10
-        embededit = discord.Embed(title="Servers", description="A list of servers with players online", color=0xFF7373)
+        embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with players online", color=0xFF7373)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1]} | players: {self.data[counter][2]} \n"
             counter += 1
