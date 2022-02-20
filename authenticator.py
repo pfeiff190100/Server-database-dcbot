@@ -16,8 +16,7 @@ class authenticate(commands.Cog):
         await self.cmd.searchservers(ctx, message)
 
     @commands.command()
-    async def details (self, ctx, message):
-        print("details")
+    async def details (self, ctx, message=None):
         await self.cmd.details(ctx, message)
 
     async def on_reaction(self, reaction, user):
