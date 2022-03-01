@@ -1,28 +1,38 @@
-import databasecmd
+"""module imports"""
 from discord.ext import commands
-from threading import Thread
 
-class authenticate(commands.Cog):
+import databasecmd
+
+
+class DCcmd(commands.Cog):
+    """discord commands"""
+
     def __init__(self, client):
+        """init func"""
         self.client = client
         self.cmd = databasecmd.CMD()
-        
+
     @commands.command()
     async def rand (self, ctx):
-       await self.cmd.getrandserver(ctx)
-  
+        """command to get random servers out of database"""
+        await self.cmd.getrandserver(ctx)
+
     @commands.command()
     async def online (self, ctx, message="top"):
+        """command to get servers with players online"""
         await self.cmd.searchservers(ctx, message)
 
     @commands.command()
     async def details (self, ctx, message=None):
-        await self.cmd.details(ctx, message)
+        """command to get more details about a server"""
+        await self.cmd.info(ctx, message)
 
     async def on_reaction(self, reaction, user):
+        """on reaction"""
         msg = reaction.message
-        if(str(msg.author) == "MC-servers#6007"):
+        if str(msg.author) == "MC-servers#6007":
             await self.cmd.checkreaction(reaction, user)
 
 def setup(client):
-    client.add_cog(authenticate(client))
+    """setup"""
+    client.add_cog(DCcmd(client))
