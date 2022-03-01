@@ -1,3 +1,4 @@
+"""module imports"""
 import sqlalchemy
 import sqlalchemy.ext.declarative
 
@@ -7,6 +8,6 @@ class Server(Base):
     """creating Server"""
 
     __tablename__ = "server"
-    
+
     server_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     server_hostname = sqlalchemy.Column(sqlalchemy.String)
