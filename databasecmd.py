@@ -137,7 +137,9 @@ class CMD():
         await self.msg.delete()
 
     async def details(self, ctx, message):
-        if message == None:
+        """get details about a server"""
+
+        if message is None:
             await ctx.channel.send("Missing ip to perform this command")
             return
 
@@ -147,31 +149,29 @@ class CMD():
             server = MinecraftServer.lookup(hostname + ":25565")
             status = server.status()
         except:
-            await msg.edit(content=f"invalid ip {message}")     
+            await msg.edit(content=f"invalid ip {message}")   
         print(f"collecting information of {message}")
-        
+
         await msg.delete()
         """gets the favicon of the minecraft server"""
         img_data = status.favicon
-        if(img_data != None):
+        if img_data is not None:
             response = urllib.request.urlopen(img_data)
-            with open('img/details.jpg', 'wb') as f:
-                f.write(response.file.read())   
-                file = discord.File("img/details.jpg")        
-        
-        """embed for displaying infos"""
-        embedVar = discord.Embed(title="Server", description="motd: " + status.description, color=0xff6ec7)
-        embedVar.add_field(name="ip", value=hostname, inline=False)
-        embedVar.add_field(name="version", value=status.version.name, inline=False)
-        embedVar.add_field(name="Players online", value=status.players.online, inline=False)
-        embedVar.add_field(name="Latency in ms", value=status.latency, inline=False)
-        embedVar.set_image(url='attachment://details.jpg')
-        if img_data != None:
-            await ctx.channel.send(embed=embedVar, file= file)
+            with open('img/details.jpg', 'wb') as file:
+                file.write(response.file.read())
+                file = discord.File("img/details.jpg")
+
+        # embed for displaying infos
+        embed = discord.Embed(title="Server", description="motd: " + status.description, color=0xff6ec7)
+        embed.add_field(name="ip", value=hostname, inline=False)
+        embed.add_field(name="version", value=status.version.name, inline=False)
+        embed.add_field(name="Players online", value=status.players.online, inline=False)
+        embed.add_field(name="Latency in ms", value=status.latency, inline=False)
+        embed.set_image(url='attachment://details.jpg')
+        if img_data is not None:
+            await ctx.channel.send(embed=embed, file= file)
         else:
-            await ctx.channel.send(embed=embedVar)
-        
-        
+            await ctx.channel.send(embed=embed)
 
     async def checkreaction(self, reaction, user):
         """functions to handle reactions"""
