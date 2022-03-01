@@ -1,0 +1,5 @@
+command to get more detailed information of a server
+commond to get all online servers with no players online
+command to search for a specifc players
+increase performance
+mabye check for whitelist
