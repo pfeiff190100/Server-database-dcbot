@@ -25,7 +25,7 @@ class Ping():
                                                 ":25565")
                 status = server.status()
                 player_online = int(status.players.online)
-            except:
+            except IOError:
                 pass
             if player_online > 0:
                 data.append((self.hostname[counter], status.version.name,
