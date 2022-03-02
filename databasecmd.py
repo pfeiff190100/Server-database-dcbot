@@ -36,7 +36,7 @@ class CMD():
                 server = MinecraftServer.lookup(hostname + ":25565")
                 status = server.status()
                 player_online = status.players.online
-            except:
+            except IOError:
                 pass
             tries += 1
             await message.edit(content=f"looking for players ip:{hostname}" + \
@@ -81,31 +81,13 @@ class CMD():
 
         counter = 0
         pagelengh = 0
-        host_count = 1
-        threadlengh = 10
-        databaselengh = 5000
+
+        
 
         infomsg = await ctx.channel.send("searching for servers with" +
                                          " players online")
-        # int(editdatabase.Databasemanager().lengh())
-        while host_count < databaselengh:
-            while self.threadcounter > 200:
-                time.sleep(0.1)
-            outadresses.append(editdatabase.Databasemanager().get(host_count))
-            if len(outadresses) >= threadlengh:
-                lookup = serverlookup.Ping(threadlengh, outadresses.copy(),
-                                           self)
-                Thread(target=lookup.main).start()
-                self.threadcounter += 1
-                outadresses.clear()
-            host_count += 1
-        await infomsg.edit(content="waiting for all threads to finisch")
 
-        while True:
-            if self.threadcounter == 0:
-                print(f"found {len(self.data)} servers with players online " +
-                      f"out of {databaselengh}")
-                break
+        Thread(target=self.ping()).start()
 
         await infomsg.delete()
 
@@ -120,7 +102,7 @@ class CMD():
         embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with" +
                                                            " players online", color=0xFF7373)
         while counter < len(self.data) and pagelengh < 10:
-            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1]} | players: {self.data[counter][2]} \n"
+            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:19]} | players: {self.data[counter][2]} \n"
             counter += 1
             pagelengh += 1
         embed.add_field(name=f"Page: {self.page + 1}", value=out,
@@ -135,43 +117,6 @@ class CMD():
         print(message)
         time.sleep(300)
         await self.msg.delete()
-
-    async def details(self, ctx, message):
-        """get details about a server"""
-
-        if message is None:
-            await ctx.channel.send("Missing ip to perform this command")
-            return
-
-        msg = await ctx.channel.send("collecting information ....")
-        hostname = message
-        try:
-            server = MinecraftServer.lookup(hostname + ":25565")
-            status = server.status()
-        except:
-            await msg.edit(content=f"invalid ip {message}")   
-        print(f"collecting information of {message}")
-
-        await msg.delete()
-        """gets the favicon of the minecraft server"""
-        img_data = status.favicon
-        if img_data is not None:
-            response = urllib.request.urlopen(img_data)
-            with open('img/details.jpg', 'wb') as file:
-                file.write(response.file.read())
-                file = discord.File("img/details.jpg")
-
-        # embed for displaying infos
-        embed = discord.Embed(title="Server", description="motd: " + status.description, color=0xff6ec7)
-        embed.add_field(name="ip", value=hostname, inline=False)
-        embed.add_field(name="version", value=status.version.name, inline=False)
-        embed.add_field(name="Players online", value=status.players.online, inline=False)
-        embed.add_field(name="Latency in ms", value=status.latency, inline=False)
-        embed.set_image(url='attachment://details.jpg')
-        if img_data is not None:
-            await ctx.channel.send(embed=embed, file= file)
-        else:
-            await ctx.channel.send(embed=embed)
 
     async def checkreaction(self, reaction, user):
         """functions to handle reactions"""
@@ -201,3 +146,30 @@ class CMD():
         embededit.add_field(name=f"Page: {self.page + 1}", value=out,
                             inline=False)
         await self.msg.edit(embed=embededit)
+        out = None
+
+    def ping(self):
+        """Starts the ping in a seperate Thread"""
+        host_count = 1
+        threadlengh = 10
+        databaselengh = int(editdatabase.Databasemanager().lengh())
+        #databaselengh = 1000
+        outadresses = []
+
+        while host_count < databaselengh:
+            while self.threadcounter > 2000:
+                time.sleep(0.1)
+            outadresses.append(editdatabase.Databasemanager().get(host_count))
+            if len(outadresses) >= threadlengh:
+                lookup = serverlookup.Ping(threadlengh, outadresses.copy(),
+                                           self)
+                Thread(target=lookup.main).start()
+                self.threadcounter += 1
+                outadresses.clear()
+            host_count += 1
+
+        while True:
+            if self.threadcounter == 0:
+                print(f"found {len(self.data)} servers with players online " +
+                      f"out of {databaselengh}")
+                break

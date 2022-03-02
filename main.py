@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 import authenticator
+import databasecmd
 
 cogs = [authenticator]
 
@@ -24,8 +25,7 @@ async def on_reaction_add(reaction, user):
     if user != client.user:
         await client.cogs["DCcmd"].on_reaction(reaction, user)
 
-
 for i, item in enumerate(cogs):
     cogs[i].setup(client)
 
-client.run('OTQxNjI2NTMzMDc5MDUyMzE4.YgYsDA.qc3w5Veg5X0VepS1-iEIXkqWW18')
+client.run(open("token.txt").readline())
