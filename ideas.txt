@@ -3,3 +3,5 @@ commond to get all online servers with no players online
 command to search for a specifc players
 increase performance
 mabye check for whitelist
+search for servers where players online are in a range of 10 - 20 for example
+search for servers with specifc versions

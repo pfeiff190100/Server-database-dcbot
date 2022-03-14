@@ -10,13 +10,7 @@ class Ping():
         self.tcount = cmd
 
     def main(self):
-        """main func to start ping"""
-        self.ping()
-        self.tcount.threadcounter -= 1
-
-    def ping(self):
-        """pings servers and waiting for responce"""
-        data = []
+        """pings servers and checks if there are any players on the server"""
         counter = 0
         player_online = 0
         while counter < self.threads:
@@ -28,9 +22,8 @@ class Ping():
             except IOError:
                 pass
             if player_online > 0:
-                data.append((self.hostname[counter], status.version.name,
+                self.tcount.data.append((self.hostname[counter], status.version.name,
                              player_online))
             counter += 1
-        if data:
-            for i in data:
-                self.tcount.data.append(i)
+
+        self.tcount.threadcounter -= 1

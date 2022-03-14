@@ -9,6 +9,7 @@ __pycache__/
 #custom
 *.jpg
 *.txt
+onlineservers.db
 
 # Distribution / packaging
 .Python

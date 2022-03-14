@@ -18,9 +18,14 @@ class DCcmd(commands.Cog):
         await self.cmd.getrandserver(ctx)
 
     @commands.command()
-    async def online (self, ctx, message="top"):
+    async def onlinelookup (self, ctx, message="top"):
         """command to get servers with players online"""
         await self.cmd.searchservers(ctx, message)
+
+    @commands.command()
+    async def online (self, ctx):
+        """command to get servers with players online"""
+        await self.cmd.showembed(ctx)
 
     @commands.command()
     async def details (self, ctx, message=None):

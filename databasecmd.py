@@ -1,11 +1,12 @@
 """Module imports"""
+import asyncio
 import random
 import time
 import urllib
-from threading import Thread
 
 import discord
 from mcstatus import MinecraftServer
+from threading import Thread
 
 import editdatabase
 import serverlookup
@@ -39,7 +40,7 @@ class CMD():
             except IOError:
                 pass
             tries += 1
-            await message.edit(content=f"looking for players ip:{hostname}" + \
+            await message.edit(content=f"looking for players ip:{hostname} " + \
                                f"| tries: {tries}")
         print(f"found server ip:{hostname} with {player_online}"+ \
               " player(s) online")
@@ -76,18 +77,33 @@ class CMD():
         self.page = 0
         self.data.clear()
 
-        out = ""
+        threadlengh = 10
+
+        adresses = editdatabase.Databasemanager().all()
         outadresses = []
-
-        counter = 0
-        pagelengh = 0
-
-        
+        ping_threads = []
 
         infomsg = await ctx.channel.send("searching for servers with" +
                                          " players online")
 
-        Thread(target=self.ping()).start()
+        for adress in adresses:
+            while self.threadcounter > 200:
+                time.sleep(0.1)
+            outadresses.append(adress)
+            if len(outadresses) >= threadlengh:
+                lookup = serverlookup.Ping(threadlengh, outadresses.copy(),
+                                           self)
+                pt = Thread(target=lookup.main)
+                ping_threads.append(pt)
+                pt.start()
+                self.threadcounter += 1
+                outadresses.clear()
+
+        for pt in ping_threads:
+            pt.join()
+
+        print(f"found {len(self.data)} servers with players onliqne " +
+                f"out of {editdatabase.Databasemanager().lengh()}")
 
         await infomsg.delete()
 
@@ -96,20 +112,9 @@ class CMD():
         elif message == "top":
             self.data.sort(key=lambda x: int(x[2]), reverse=True)
 
-        counter = self.page * 10
-
-        # embed for displaying info
-        embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with" +
-                                                           " players online", color=0xFF7373)
-        while counter < len(self.data) and pagelengh < 10:
-            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:19]} | players: {self.data[counter][2]} \n"
-            counter += 1
-            pagelengh += 1
-        embed.add_field(name=f"Page: {self.page + 1}", value=out,
-                           inline=False)
-        self.msg = await ctx.channel.send(embed=embed)
-        await self.msg.add_reaction("⬅️")
-        await self.msg.add_reaction("➡️")
+        await ctx.channel.send(f"found {len(self.data)} servers with players online " +
+                f"out of {editdatabase.Databasemanager().lengh()} use -online to view")
+        editdatabase.Databasemanager().save_server(self.data)
 
     async def info(self, ctx, message):
         """class to get detailed infos about a specific ip which the user can enter"""
@@ -117,6 +122,27 @@ class CMD():
         print(message)
         time.sleep(300)
         await self.msg.delete()
+
+
+    async def showembed(self, ctx):
+        """command to show embed"""
+        counter = self.page * 10
+        out = ""
+        pagelengh = 0
+        self.data = editdatabase.Databasemanager().getonservers()
+
+        # embed for displaying info
+        embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with" +
+                                                           " players online", color=0xFF7373)
+        while counter < len(self.data) and pagelengh < 10:
+            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
+            counter += 1
+            pagelengh += 1
+        embed.add_field(name=f"Page: {self.page + 1}", value=out,
+                           inline=False)
+        self.msg = await ctx.channel.send(embed=embed)
+        await self.msg.add_reaction("⬅️")
+        await self.msg.add_reaction("➡️")
 
     async def checkreaction(self, reaction, user):
         """functions to handle reactions"""
@@ -133,43 +159,16 @@ class CMD():
 
     async def updateembed(self):
         """class to update embed on reaction"""
-
         out = ""
         pagelengh = 0
         counter = self.page * 10
         embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with players online", color=0xFF7373)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
-                   f"{self.data[counter][1]} | players: {self.data[counter][2]} \n"
+                   f"{self.data[counter][1][0:20]} | players: {self.data[counter][2]} \n"
             counter += 1
             pagelengh += 1
         embededit.add_field(name=f"Page: {self.page + 1}", value=out,
                             inline=False)
         await self.msg.edit(embed=embededit)
         out = None
-
-    def ping(self):
-        """Starts the ping in a seperate Thread"""
-        host_count = 1
-        threadlengh = 10
-        databaselengh = int(editdatabase.Databasemanager().lengh())
-        #databaselengh = 1000
-        outadresses = []
-
-        while host_count < databaselengh:
-            while self.threadcounter > 2000:
-                time.sleep(0.1)
-            outadresses.append(editdatabase.Databasemanager().get(host_count))
-            if len(outadresses) >= threadlengh:
-                lookup = serverlookup.Ping(threadlengh, outadresses.copy(),
-                                           self)
-                Thread(target=lookup.main).start()
-                self.threadcounter += 1
-                outadresses.clear()
-            host_count += 1
-
-        while True:
-            if self.threadcounter == 0:
-                print(f"found {len(self.data)} servers with players online " +
-                      f"out of {databaselengh}")
-                break
