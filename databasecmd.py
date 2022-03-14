@@ -2,7 +2,6 @@
 import asyncio
 import random
 import time
-import urllib
 
 import discord
 from mcstatus import MinecraftServer
@@ -10,7 +9,7 @@ from threading import Thread
 
 import editdatabase
 import serverlookup
-
+import embeds
 
 class CMD():
     """functions to execute in the discord bot"""
@@ -46,37 +45,31 @@ class CMD():
               " player(s) online")
 
         await message.delete()
-        # gets the favicon of the minecraft server
-        img_data = status.favicon
-        if img_data is not None:
-            response = urllib.request.urlopen(img_data)
-            with open('image.jpg', 'wb') as file:
-                file.write(response.file.read())
-                file = discord.File("image.jpg")
+        
+        await embeds.embedprint().ri_embed(ctx, status, hostname)
 
-        # embed for displaying infos
+    async def get_info(self, ctx, message):
+        """gets info about a specific server"""
+        debugmsg = await ctx.channel.send("trying to get info about the server")
+        try:
+            server = MinecraftServer.lookup(message)
+            status = server.status()
+            await debugmsg.delete()
+        except IOError:
+            try:
+                server = MinecraftServer.lookup(message + ":25565")
+                status = server.status()
+                await debugmsg.delete()
+            except IOError:
+                await debugmsg.edit(content="server was not reachable")
 
-        embed = discord.Embed(title="Server", description="motd: " +
-                                 status.description, color=0xff6ec7)
-        embed.add_field(name="ip", value=hostname, inline=False)
-        embed.add_field(name="version", value=status.version.name,
-                           inline=False)
-        embed.add_field(name="Players online", value=status.players.online,
-                           inline=False)
-        embed.add_field(name="Latency in ms", value=status.latency,
-                           inline=False)
-        embed.set_image(url='attachment://image.jpg')
-        if img_data is not None:
-            await ctx.channel.send(embed=embed, file=file)
-        else:
-            await ctx.channel.send(embed=embed)
+        await embeds.embedprint().ri_embed(ctx, status, message)
 
-    async def searchservers(self, ctx, message):
+
+    async def searchservers(self, ctx):
         """class to search through the hole database for servers with players online"""
-
-        self.page = 0
         self.data.clear()
-
+        self.page = 0
         threadlengh = 10
 
         adresses = editdatabase.Databasemanager().all()
@@ -102,34 +95,26 @@ class CMD():
         for pt in ping_threads:
             pt.join()
 
-        print(f"found {len(self.data)} servers with players onliqne " +
+        print(f"found {len(self.data)} servers with players online " +
                 f"out of {editdatabase.Databasemanager().lengh()}")
 
         await infomsg.delete()
 
-        if message == "reverse":
-            self.data.sort(key=lambda x: int(x[2]))
-        elif message == "top":
-            self.data.sort(key=lambda x: int(x[2]), reverse=True)
-
         await ctx.channel.send(f"found {len(self.data)} servers with players online " +
                 f"out of {editdatabase.Databasemanager().lengh()} use -online to view")
-        editdatabase.Databasemanager().save_server(self.data)
+        editdatabase.Databasemanager().onserverssave(self.data)
 
-    async def info(self, ctx, message):
-        """class to get detailed infos about a specific ip which the user can enter"""
-        await ctx.channel.send("info")
-        print(message)
-        time.sleep(300)
-        await self.msg.delete()
-
-
-    async def showembed(self, ctx):
+    async def showembed(self, ctx, message):
         """command to show embed"""
         counter = self.page * 10
         out = ""
         pagelengh = 0
-        self.data = editdatabase.Databasemanager().getonservers()
+        self.data = editdatabase.Databasemanager().onserversget()
+
+        if message == "reverse":
+            self.data.sort(key=lambda x: int(x[2]))
+        elif message == None:
+            self.data.sort(key=lambda x: int(x[2]), reverse=True)
 
         # embed for displaying info
         embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with" +

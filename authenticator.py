@@ -18,19 +18,19 @@ class DCcmd(commands.Cog):
         await self.cmd.getrandserver(ctx)
 
     @commands.command()
-    async def onlinelookup (self, ctx, message="top"):
+    async def onlinelookup (self, ctx):
         """command to get servers with players online"""
-        await self.cmd.searchservers(ctx, message)
+        await self.cmd.searchservers(ctx)
 
     @commands.command()
-    async def online (self, ctx):
+    async def online (self, ctx, message=None):
         """command to get servers with players online"""
-        await self.cmd.showembed(ctx)
+        await self.cmd.showembed(ctx, message)
 
     @commands.command()
-    async def details (self, ctx, message=None):
-        """command to get more details about a server"""
-        await self.cmd.info(ctx, message)
+    async def details(self, ctx, message=None):
+        """command to get details about a server"""
+        await self.cmd.get_info(ctx, message)
 
     async def on_reaction(self, reaction, user):
         """on reaction"""

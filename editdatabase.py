@@ -38,7 +38,7 @@ class Databasemanager():
                 hostnames.append(i.server_hostname)
             return hostnames
 
-    def save_server(self, data):
+    def onserverssave(self, data):
         """saves online servers to a database"""
         with self.session_onlineservers() as session:
             for i in data:
@@ -46,7 +46,7 @@ class Databasemanager():
                 session.add(onserverdb)
             session.commit()
 
-    def getonservers(self):
+    def onserversget(self):
         """returns all entries of database"""
         serverinfo = []
         with self.session_onlineservers() as session:
