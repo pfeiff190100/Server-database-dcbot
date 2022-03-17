@@ -15,12 +15,12 @@ class DCcmd(commands.Cog):
     @commands.command()
     async def rand (self, ctx):
         """command to get random servers out of database"""
-        await self.cmd.getrandserver(ctx)
+        await self.cmd.randcmd(ctx)
 
     @commands.command()
     async def onlinelookup (self, ctx):
         """command to get servers with players online"""
-        await self.cmd.searchservers(ctx)
+        await self.cmd.onlinecmd(ctx)
 
     @commands.command()
     async def online (self, ctx, message=None):
@@ -30,11 +30,10 @@ class DCcmd(commands.Cog):
     @commands.command()
     async def details(self, ctx, message=None):
         """command to get details about a server"""
-        await self.cmd.getdetails(ctx, message)
+        await self.cmd.detailscmd(ctx, message)
 
     async def on_reaction(self, reaction, user):
         """on reaction"""
-        msg = reaction.message
         await self.cmd.checkreaction(reaction, user)
 
 def setup(client):

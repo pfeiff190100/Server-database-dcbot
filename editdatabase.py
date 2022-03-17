@@ -1,5 +1,4 @@
 """module imports"""
-from http import server
 import sqlalchemy
 from servers import Base, Server
 from onlineservers import Base as onBase, Server as onServer
@@ -54,4 +53,3 @@ class Databasemanager():
             for i in database:
                 serverinfo.append((i.hostname, i.modt, i.onplayer))
             return serverinfo
-

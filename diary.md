@@ -48,3 +48,9 @@ Fixed pylint errors, new embled for details method for displaying more infos
 #### 7:50 - 9:30
 
 All playersnames of the curently selected server will be show if u use -details
+
+### 17.03.2022
+
+#### 14:55 - 17:35
+
+-details will now also show the geolocation of the server, worked on rewritting the database when servers are looked up

@@ -4,6 +4,7 @@ import os
 import discord
 
 import databasecmd
+import geolocation
 
 
 class Embedmanager():
@@ -11,7 +12,7 @@ class Embedmanager():
     def __init__(self) -> None:
         pass
 
-    async def r_embed(self, ctx, status, hostname):
+    async def randembed(self, ctx, status, hostname):
         """embed for rand and info command command"""
 
         path = "pics/rand.jpg"
@@ -41,7 +42,7 @@ class Embedmanager():
         else:
             await ctx.channel.send(embed=embed)
 
-    async def d_embed(self, ctx, server, hostname):
+    async def detailsembed(self, ctx, server, hostname):
         """embed for details command"""
         status = server.status()
         path = "pics/details.jpg"
@@ -65,6 +66,8 @@ class Embedmanager():
         embed.add_field(name="Players online", value=status.players.online,
                            inline=False)
         embed.add_field(name="Player names", value=databasecmd.CMD().getplayernames(server),
+                           inline=False)
+        embed.add_field(name="Geolocation", value=geolocation.Serverlocation(hostname).main(),
                            inline=False)
         embed.set_image(url='attachment://details.jpg')
         if img_data is not None:

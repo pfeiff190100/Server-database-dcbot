@@ -27,4 +27,4 @@ async def on_reaction_add(reaction, user):
 for i, item in enumerate(cogs):
     cogs[i].setup(client)
 
-client.run(open("token.txt").readline())
+client.run(open("token.txt", encoding="utf8").readline())

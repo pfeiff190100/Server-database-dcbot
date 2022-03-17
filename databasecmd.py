@@ -23,7 +23,7 @@ class CMD():
         self.page = 0
         self.msg = ""
 
-    async def getrandserver(self, ctx):
+    async def randcmd(self, ctx):
         """returns random servers out of the database"""
 
         player_online = 0
@@ -46,24 +46,27 @@ class CMD():
               " player(s) online")
 
         await message.delete()
-        await embeds.Embedmanager().r_embed(ctx, status, hostname)
+        await embeds.Embedmanager().randembed(ctx, status, hostname)
 
-    async def getdetails(self, ctx, message):
+    async def detailscmd(self, ctx, message):
         """gets info about a specific server"""
         debugmsg = await ctx.channel.send("trying to get info about the server")
         try:
             server = MinecraftServer.lookup(message)
-            await embeds.Embedmanager().d_embed(ctx, server, message)
+            await embeds.Embedmanager().detailsembed(ctx, server, message)
             await debugmsg.delete()
+            print(f"successfully got details from '{message}'")
         except IOError:
             try:
                 server = MinecraftServer.lookup(message + ":25565")
-                await embeds.Embedmanager().d_embed(ctx, server, message)
+                await embeds.Embedmanager().detailsembed(ctx, server, message)
                 await debugmsg.delete()
+                print(f"successfully got details from '{message}'")
             except IOError:
                 await debugmsg.edit(content="server was not reachable")
+                print(f"failed to get details from {message}")
 
-    async def searchservers(self, ctx):
+    async def onlinecmd(self, ctx):
         """class to search through the hole database for servers with players online"""
         self.data.clear()
         self.page = 0
@@ -129,24 +132,27 @@ class CMD():
     def getplayernames(self, server):
         """Looping through user query server (12 players) as long it doesnt have all playernames"""
         status = server.status()
-        if status.players.sample is None:
-            return "no player responce from server"
-
-        self.players = [item.name for item in status.players.sample]
         online = status.players.online
 
+        if online == 0 and status.players.sample is None:
+            return "no players online"
+        elif online > 0 and status.players.sample is None:
+            return "No responce"
+
+        self.players = [item.name for item in status.players.sample]
+
+
         if len(self.players) == 0:
-            return "no player online or no responce"
+            return"responce list is empty"
 
         if online > 12:
             if len(self.players) == 1:
                 return f"server modified responce: {self.players[0]}"
             while len(self.players) < online:
                 status = server.status()
-                names = [item.name for item in status.players.sample]
-                for i in names:
-                    if i not in self.players:
-                        self.players.append(i)
+                for i in status.players.sample:
+                    if i.name not in self.players:
+                        self.players.append(i.name)
         return self.players
 
     async def onembed(self, ctx):
