@@ -1,15 +1,15 @@
 """Module imports"""
-import asyncio
 import random
 import time
+from threading import Thread
 
 import discord
 from mcstatus import MinecraftServer
-from threading import Thread
 
 import editdatabase
-import serverlookup
 import embeds
+import serverlookup
+
 
 class CMD():
     """functions to execute in the discord bot"""
@@ -19,6 +19,7 @@ class CMD():
 
         self.data = []
         self.threadcounter = 0
+        self.players = ""
         self.page = 0
         self.msg = ""
 
@@ -45,26 +46,22 @@ class CMD():
               " player(s) online")
 
         await message.delete()
-        
-        await embeds.embedprint().ri_embed(ctx, status, hostname)
+        await embeds.Embedmanager().r_embed(ctx, status, hostname)
 
-    async def get_info(self, ctx, message):
+    async def getdetails(self, ctx, message):
         """gets info about a specific server"""
         debugmsg = await ctx.channel.send("trying to get info about the server")
         try:
             server = MinecraftServer.lookup(message)
-            status = server.status()
+            await embeds.Embedmanager().d_embed(ctx, server, message)
             await debugmsg.delete()
         except IOError:
             try:
                 server = MinecraftServer.lookup(message + ":25565")
-                status = server.status()
+                await embeds.Embedmanager().d_embed(ctx, server, message)
                 await debugmsg.delete()
             except IOError:
                 await debugmsg.edit(content="server was not reachable")
-
-        await embeds.embedprint().ri_embed(ctx, status, message)
-
 
     async def searchservers(self, ctx):
         """class to search through the hole database for servers with players online"""
@@ -86,14 +83,14 @@ class CMD():
             if len(outadresses) >= threadlengh:
                 lookup = serverlookup.Ping(threadlengh, outadresses.copy(),
                                            self)
-                pt = Thread(target=lookup.main)
-                ping_threads.append(pt)
-                pt.start()
+                pingthread = Thread(target=lookup.main)
+                ping_threads.append(pingthread)
+                pingthread.start()
                 self.threadcounter += 1
                 outadresses.clear()
 
-        for pt in ping_threads:
-            pt.join()
+        for pingthread in ping_threads:
+            pingthread.join()
 
         print(f"found {len(self.data)} servers with players online " +
                 f"out of {editdatabase.Databasemanager().lengh()}")
@@ -105,16 +102,58 @@ class CMD():
         editdatabase.Databasemanager().onserverssave(self.data)
 
     async def showembed(self, ctx, message):
-        """command to show embed"""
-        counter = self.page * 10
-        out = ""
-        pagelengh = 0
+        """shows a embed based on the database"""
         self.data = editdatabase.Databasemanager().onserversget()
 
         if message == "reverse":
             self.data.sort(key=lambda x: int(x[2]))
-        elif message == None:
+        elif message is None:
             self.data.sort(key=lambda x: int(x[2]), reverse=True)
+
+        await self.onembed(ctx)
+
+    async def checkreaction(self, reaction, user):
+        """functions to handle reactions"""
+        if str(reaction.emoji) == "⬅️":
+            if self.page != 0:
+                self.page -= 1
+                await self.updatoneembed()
+                await reaction.message.remove_reaction(reaction.emoji, user)
+        if str(reaction.emoji) == "➡️":
+            if (self.page + 1) * 10 < len(self.data) - 1:
+                self.page += 1
+                await self.updatoneembed()
+            await reaction.message.remove_reaction(reaction.emoji, user)
+
+
+    def getplayernames(self, server):
+        """Looping through user query server (12 players) as long it doesnt have all playernames"""
+        status = server.status()
+        if status.players.sample is None:
+            return "no player responce from server"
+
+        self.players = [item.name for item in status.players.sample]
+        online = status.players.online
+
+        if len(self.players) == 0:
+            return "no player online or no responce"
+
+        if online > 12:
+            if len(self.players) == 1:
+                return f"server modified responce: {self.players[0]}"
+            while len(self.players) < online:
+                status = server.status()
+                names = [item.name for item in status.players.sample]
+                for i in names:
+                    if i not in self.players:
+                        self.players.append(i)
+        return self.players
+
+    async def onembed(self, ctx):
+        """command to show embed"""
+        counter = self.page * 10
+        out = ""
+        pagelengh = 0
 
         # embed for displaying info
         embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with" +
@@ -129,28 +168,16 @@ class CMD():
         await self.msg.add_reaction("⬅️")
         await self.msg.add_reaction("➡️")
 
-    async def checkreaction(self, reaction, user):
-        """functions to handle reactions"""
-        if str(reaction.emoji) == "⬅️":
-            if self.page != 0:
-                self.page -= 1
-                await self.updateembed()
-                await reaction.message.remove_reaction(reaction.emoji, user)
-        if str(reaction.emoji) == "➡️":
-            if (self.page + 1) * 10 < len(self.data) - 1:
-                self.page += 1
-                await self.updateembed()
-            await reaction.message.remove_reaction(reaction.emoji, user)
-
-    async def updateembed(self):
+    async def updatoneembed(self):
         """class to update embed on reaction"""
         out = ""
         pagelengh = 0
         counter = self.page * 10
+
         embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with players online", color=0xFF7373)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
-                   f"{self.data[counter][1][0:20]} | players: {self.data[counter][2]} \n"
+                   f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
             counter += 1
             pagelengh += 1
         embededit.add_field(name=f"Page: {self.page + 1}", value=out,

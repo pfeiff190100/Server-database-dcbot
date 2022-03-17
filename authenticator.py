@@ -30,13 +30,12 @@ class DCcmd(commands.Cog):
     @commands.command()
     async def details(self, ctx, message=None):
         """command to get details about a server"""
-        await self.cmd.get_info(ctx, message)
+        await self.cmd.getdetails(ctx, message)
 
     async def on_reaction(self, reaction, user):
         """on reaction"""
         msg = reaction.message
-        if str(msg.author) == "MC-servers#6007":
-            await self.cmd.checkreaction(reaction, user)
+        await self.cmd.checkreaction(reaction, user)
 
 def setup(client):
     """setup"""

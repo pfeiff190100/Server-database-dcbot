@@ -10,29 +10,41 @@ Added "-rand" which searchs through the database until a server with players onl
 
 ### 18.02.2022 bug fixes and performance improvements
 
-### 15:00 - 18:00
+#### 15:00 - 18:00
 
 Reworked my code from yesterday
 
 ### 20.02.2022 tried to add details
 
-### 12:00 - 14:00
+#### 12:00 - 14:00
 
 Added details but removed it afterwards because it was buggy
 
 ### 1.03.2022
 
-### 11:35 - 13:15
+#### 11:35 - 13:15
 
 Used pylint to fix code formating
 
 ### 2.03.2022
 
-### 7:50 - 9:30
+#### 7:50 - 9:30
 
 Moved bot token out of main to a seperate file because security flaw
 
-# 3.03.2022 - 14.03.2022 Fixed issue
+### 3.03.2022 - 14.03.2022 Fixed issue
 
 Tried to fix a error where the bot would search through all servers but then would restart after he was done -> data was lost 
 Rewrote my code so the data is written to a database which is read out by a seperate func
+
+### 15.03.2022
+
+#### 7:25 - 12:25
+
+Fixed pylint errors, new embled for details method for displaying more infos
+
+### 16.03.2022
+
+#### 7:50 - 9:30
+
+All playersnames of the curently selected server will be show if u use -details
