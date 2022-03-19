@@ -12,9 +12,9 @@ class Embedmanager():
     def __init__(self) -> None:
         pass
 
-    async def randembed(self, ctx, status, hostname):
+    async def randembed(self, ctx, server, hostname):
         """embed for rand and info command command"""
-
+        status = server.status()
         path = "pics/rand.jpg"
         # gets the favicon of the minecraft server
         img_data = status.favicon
@@ -26,16 +26,18 @@ class Embedmanager():
                 file = discord.File('pics/rand.jpg', filename="rand.jpg")
 
         # embed for displaying infos
-
-        embed = discord.Embed(title="Random server", description="motd: " +
-                                 status.description, color=0x00008B)
+        embed = discord.Embed(title="Random Server", description="motd: " +
+                                 status.description, color=0xFFA500)
         embed.add_field(name="ip", value=hostname, inline=True)
-        embed.add_field(name="version", value=status.version.name,
-                           inline=True)
-        embed.add_field(name="Players online", value=status.players.online,
-                           inline=False)
         embed.add_field(name="Latency in ms", value=status.latency,
-                           inline=True)
+                    inline=True)
+        embed.add_field(name="version", value=status.version.name,
+                           inline=False)
+        embed.add_field(name=f"Players online ({status.players.online})",
+                           value=databasecmd.CMD().getplayernames(server),
+                           inline=False)
+        embed.add_field(name="Geolocation", value=geolocation.Serverlocation(hostname).main(),
+                           inline=False)
         embed.set_image(url='attachment://rand.jpg')
         if img_data is not None:
             await ctx.channel.send(embed=embed, file=file)
@@ -58,14 +60,13 @@ class Embedmanager():
         # embed for displaying infos
         embed = discord.Embed(title="Details about a Server", description="motd: " +
                                  status.description, color=0xFFA500)
-        embed.add_field(name="ip", value=hostname, inline=False)
-        embed.add_field(name="version", value=status.version.name,
-                           inline=True)
+        embed.add_field(name="ip", value=hostname, inline=True)
         embed.add_field(name="Latency in ms", value=status.latency,
                     inline=True)
-        embed.add_field(name="Players online", value=status.players.online,
+        embed.add_field(name="version", value=status.version.name,
                            inline=False)
-        embed.add_field(name="Player names", value=databasecmd.CMD().getplayernames(server),
+        embed.add_field(name=f"Players online ({status.players.online})",
+                           value=databasecmd.CMD().getplayernames(server),
                            inline=False)
         embed.add_field(name="Geolocation", value=geolocation.Serverlocation(hostname).main(),
                            inline=False)

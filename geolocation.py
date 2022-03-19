@@ -1,5 +1,4 @@
 """module imports"""
-import json
 
 import requests
 

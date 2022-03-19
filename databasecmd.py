@@ -46,7 +46,7 @@ class CMD():
               " player(s) online")
 
         await message.delete()
-        await embeds.Embedmanager().randembed(ctx, status, hostname)
+        await embeds.Embedmanager().randembed(ctx, server, hostname)
 
     async def detailscmd(self, ctx, message):
         """gets info about a specific server"""
