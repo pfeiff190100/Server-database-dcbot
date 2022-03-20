@@ -1,5 +1,6 @@
 """module imports"""
 import sqlalchemy
+import datetime
 import sqlalchemy.ext.declarative
 
 Base = sqlalchemy.ext.declarative.declarative_base()
@@ -13,3 +14,4 @@ class Server(Base):
     hostname = sqlalchemy.Column(sqlalchemy.String)
     modt = sqlalchemy.Column(sqlalchemy.String)
     onplayer = sqlalchemy.Column(sqlalchemy.Integer)
+    timestamp = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
