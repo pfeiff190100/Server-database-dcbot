@@ -164,7 +164,8 @@ class CMD():
         embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with" +
                                                            " players online", color=0xFF7373)
         while counter < len(self.data) and pagelengh < 10:
-            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:50]} | players: {self.data[counter][2]} timestamp: {self.data[counter][3]}\n"
+            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
+            print(self.data[counter][3])
             counter += 1
             pagelengh += 1
         embed.add_field(name=f"Page: {self.page + 1}", value=out,
@@ -182,7 +183,8 @@ class CMD():
         embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with players online", color=0xFF7373)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
-                   f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} timestamp: {self.data[counter][3]} \n"
+                   f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
+            print(self.data[counter][3])
             counter += 1
             pagelengh += 1
         embededit.add_field(name=f"Page: {self.page + 1}", value=out,
