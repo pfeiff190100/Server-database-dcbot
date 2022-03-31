@@ -12,18 +12,19 @@ class Ping():
     def main(self):
         """pings servers and checks if there are any players on the server"""
         counter = 0
-        player_online = 0
+        success = False
         while counter < self.threads:
             try:
                 server = MinecraftServer.lookup(self.hostname[counter] +
                                                 ":25565")
                 status = server.status()
-                player_online = int(status.players.online)
+                success = True
             except IOError:
-                pass
-            if player_online > 0:
+                success = False
+
+            if success:
                 self.tcount.data.append((self.hostname[counter], status.version.name,
-                             player_online))
+                                status.players.online))
             counter += 1
 
         self.tcount.threadcounter -= 1

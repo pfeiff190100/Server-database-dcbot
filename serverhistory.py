@@ -9,7 +9,7 @@ Base = sqlalchemy.ext.declarative.declarative_base()
 class Server(Base):
     """creating Server"""
 
-    __tablename__ = "onlineservers"
+    __tablename__ = "serverhistory"
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     hostname = sqlalchemy.Column(sqlalchemy.String)

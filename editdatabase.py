@@ -2,6 +2,7 @@
 import sqlalchemy
 from servers import Base, Server
 from onlineservers import Base as onBase, Server as onServer
+from serverhistory import Base as Base_h, Server as server_h
 
 class Databasemanager():
     """Databasemanage"""
@@ -17,6 +18,11 @@ class Databasemanager():
         onBase.metadata.create_all(db_onlineservers)
         self.session_onlineservers = sqlalchemy.orm.sessionmaker()
         self.session_onlineservers.configure(bind=db_onlineservers)
+
+        db_serverhistory = sqlalchemy.create_engine("sqlite:///serverhistory.db")
+        Base_h.metadata.create_all(db_serverhistory)
+        self.session_serverhistory = sqlalchemy.orm.sessionmaker()
+        self.session_serverhistory.configure(bind=db_serverhistory)
 
     def get(self, primary_key):
         """returns a specific id out of the database"""
@@ -39,6 +45,14 @@ class Databasemanager():
 
     def onserverssave(self, data):
         """saves online servers to a database"""
+        """with self.session_onlineservers() as session:
+            database = session.query(onServer).all()
+            with self.session_serverhistory() as hsession:
+                if session.query(server_h).count() > 0:
+                    for i in database:
+                        hsession.add(server_h(hostname=i.hostname, modt=i.modt, onplayer=i.onplayer))
+                    hsession.commit()"""
+
         with self.session_onlineservers() as session:
             for i in data:
                 onserverdb = onServer(hostname=i[0], modt=i[1], onplayer=i[2])
