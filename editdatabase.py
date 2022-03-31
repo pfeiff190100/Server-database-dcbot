@@ -65,5 +65,5 @@ class Databasemanager():
         with self.session_onlineservers() as session:
             database = session.query(onServer).all()
             for i in database:
-                serverinfo.append((i.hostname, i.modt, i.onplayer))
+                serverinfo.append((i.hostname, i.modt, i.onplayer, i.timestamp))
             return serverinfo

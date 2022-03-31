@@ -46,7 +46,7 @@ class CMD():
               " player(s) online")
 
         await message.delete()
-        await embeds.Embedmanager().randembed(ctx, status, hostname)
+        await embeds.Embedmanager().randembed(ctx, server, hostname)
 
     async def detailscmd(self, ctx, message):
         """gets info about a specific server"""
@@ -71,7 +71,6 @@ class CMD():
         self.data.clear()
         self.page = 0
         threadlengh = 10
-
         adresses = editdatabase.Databasemanager().all()
         outadresses = []
         ping_threads = []
@@ -166,6 +165,7 @@ class CMD():
                                                            " players online", color=0xFF7373)
         while counter < len(self.data) and pagelengh < 10:
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
+            print(self.data[counter][3])
             counter += 1
             pagelengh += 1
         embed.add_field(name=f"Page: {self.page + 1}", value=out,
@@ -184,6 +184,7 @@ class CMD():
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
                    f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
+            print(self.data[counter][3])
             counter += 1
             pagelengh += 1
         embededit.add_field(name=f"Page: {self.page + 1}", value=out,
