@@ -7,7 +7,6 @@ import discord
 from mcstatus import MinecraftServer
 
 import editdatabase
-import embeds
 import serverlookup
 
 
@@ -23,48 +22,6 @@ class CMD():
         self.page = 0
         self.msg = ""
 
-    async def randcmd(self, ctx):
-        """returns random servers out of the database"""
-
-        player_online = 0
-        tries = 0
-        message = await ctx.channel.send("checking hostnames....")
-        while player_online < 1:
-            hostname = editdatabase.Databasemanager().get(random.randint(0, int(editdatabase
-                                                                                .Databasemanager()
-                                                                                .lengh())))
-            try:
-                server = MinecraftServer.lookup(hostname + ":25565")
-                status = server.status()
-                player_online = status.players.online
-            except IOError:
-                pass
-            tries += 1
-            await message.edit(content=f"looking for players ip:{hostname} " + \
-                               f"| tries: {tries}")
-        print(f"found server ip:{hostname} with {player_online}"+ \
-              " player(s) online")
-
-        await message.delete()
-        await embeds.Embedmanager().randembed(ctx, server, hostname)
-
-    async def detailscmd(self, ctx, message):
-        """gets info about a specific server"""
-        debugmsg = await ctx.channel.send("trying to get info about the server")
-        try:
-            server = MinecraftServer.lookup(message)
-            await embeds.Embedmanager().detailsembed(ctx, server, message)
-            await debugmsg.delete()
-            print(f"successfully got details from '{message}'")
-        except IOError:
-            try:
-                server = MinecraftServer.lookup(message + ":25565")
-                await embeds.Embedmanager().detailsembed(ctx, server, message)
-                await debugmsg.delete()
-                print(f"successfully got details from '{message}'")
-            except IOError:
-                await debugmsg.edit(content="server was not reachable")
-                print(f"failed to get details from {message}")
 
     async def onlinecmd(self, ctx):
         """class to search through the hole database for servers with players online"""
@@ -102,6 +59,9 @@ class CMD():
         await ctx.channel.send(f"found {len(self.data)} servers with players online " +
                 f"out of {editdatabase.Databasemanager().lengh()} use -online to view")
         editdatabase.Databasemanager().onserverssave(self.data)
+
+                 
+
 
     async def showembed(self, ctx, message):
         """shows a embed based on the database"""
@@ -165,7 +125,6 @@ class CMD():
                                                            " players online", color=0xFF7373)
         while counter < len(self.data) and pagelengh < 10:
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
-            print(self.data[counter][3])
             counter += 1
             pagelengh += 1
         embed.add_field(name=f"Page: {self.page + 1}", value=out,
@@ -184,7 +143,6 @@ class CMD():
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
                    f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
-            print(self.data[counter][3])
             counter += 1
             pagelengh += 1
         embededit.add_field(name=f"Page: {self.page + 1}", value=out,

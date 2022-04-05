@@ -45,17 +45,23 @@ class Databasemanager():
 
     def onserverssave(self, data):
         """saves online servers to a database"""
-        """with self.session_onlineservers() as session:
+        database = ""
+        lengh = 0
+        with self.session_onlineservers() as session:
+            lengh = session.query(onServer).count()
             database = session.query(onServer).all()
+        if lengh > 0:
             with self.session_serverhistory() as hsession:
-                if session.query(server_h).count() > 0:
-                    for i in database:
-                        hsession.add(server_h(hostname=i.hostname, modt=i.modt, onplayer=i.onplayer))
-                    hsession.commit()"""
+                for i in database:
+                    hsession.add(server_h(hostname=i.hostname, version=i.version, onplayer=i.onplayer))
+                hsession.commit()
+        with self.session_onlineservers() as session:
+            session.query(onServer).delete()
+            session.commit()
 
         with self.session_onlineservers() as session:
             for i in data:
-                onserverdb = onServer(hostname=i[0], modt=i[1], onplayer=i[2])
+                onserverdb = onServer(hostname=i[0], version=i[1], onplayer=i[2])
                 session.add(onserverdb)
             session.commit()
 
@@ -65,5 +71,5 @@ class Databasemanager():
         with self.session_onlineservers() as session:
             database = session.query(onServer).all()
             for i in database:
-                serverinfo.append((i.hostname, i.modt, i.onplayer, i.timestamp))
+                serverinfo.append((i.hostname, i.version, i.onplayer, i.timestamp))
             return serverinfo

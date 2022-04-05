@@ -13,6 +13,6 @@ class Server(Base):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     hostname = sqlalchemy.Column(sqlalchemy.String)
-    modt = sqlalchemy.Column(sqlalchemy.String)
+    version = sqlalchemy.Column(sqlalchemy.String)
     onplayer = sqlalchemy.Column(sqlalchemy.Integer)
     timestamp = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
