@@ -54,3 +54,10 @@ All playersnames of the curently selected server will be show if u use -details
 #### 14:55 - 17:35
 
 -details will now also show the geolocation of the server, worked on rewritting the database when servers are looked up
+
+### 05.04.2022
+
+#### 09:45 - 10:35
+
+-moved every command to a separete file added -list to show servers with specific properties
+

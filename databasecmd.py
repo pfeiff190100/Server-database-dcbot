@@ -1,10 +1,8 @@
 """Module imports"""
-import random
 import time
 from threading import Thread
 
 import discord
-from mcstatus import MinecraftServer
 
 import editdatabase
 import serverlookup

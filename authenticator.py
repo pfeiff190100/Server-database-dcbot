@@ -45,7 +45,10 @@ class DCcmd(commands.Cog):
 
     async def on_reaction(self, reaction, user):
         """on reaction"""
-        await self.cmd.checkreaction(reaction, user)
+        if str(reaction.emoji) == "⬅️" or str(reaction.emoji) == "➡️":
+            await self.cmd.checkreaction(reaction, user)
+        elif str(reaction.emoji) == "⏮️" or str(reaction.emoji) == "⏭️":
+            await self.listcmd.checkreaction(reaction, user)
 
 def setup(client):
     """setup"""
