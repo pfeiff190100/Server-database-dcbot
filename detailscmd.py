@@ -1,11 +1,14 @@
 """Module imports"""
 
-from mcstatus import MinecraftServer
-import discord
+import os
 import urllib
+
+import discord
+from mcstatus import MinecraftServer
+
 import databasecmd
 import geolocation
-import os
+
 
 class Details():
     """Details cmd class"""

@@ -58,9 +58,6 @@ class CMD():
                 f"out of {editdatabase.Databasemanager().lengh()} use -online to view")
         editdatabase.Databasemanager().onserverssave(self.data)
 
-                 
-
-
     async def showembed(self, ctx, message):
         """shows a embed based on the database"""
         self.data = editdatabase.Databasemanager().onserversget()

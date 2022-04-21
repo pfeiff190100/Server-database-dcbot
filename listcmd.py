@@ -13,11 +13,14 @@ class Listserver():
         self.msg = ""
         self.properties = ""
 
-    async def main(self, ctx, message, properties):
+    async def main(self, ctx, option, properties):
         """search for server with specific properties"""
         self.data.clear()
         self.page = 0
-        if message == "version":
+        if self.msg != "":
+            await self.msg.delete()
+
+        if option == "version":
             database = editdatabase.Databasemanager().onserversget()
             for server in database:
                 if server[1].find(properties) != -1:
@@ -34,8 +37,9 @@ class Listserver():
         lenghcount = 0
 
         # embed for displaying info
-        embed = discord.Embed(title="Servers", description=f"found {len(self.data)} with the" +
-                                                           f" version {self.properties}", color=0xFF7373)
+        embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers" +
+                                                           "with the version " +
+                                                           f"{self.properties}", color=0xFF7373)
         while counter < len(self.data) and lenghcount < 10:
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
             counter += 1

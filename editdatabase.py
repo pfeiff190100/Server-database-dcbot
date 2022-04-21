@@ -53,7 +53,8 @@ class Databasemanager():
         if lengh > 0:
             with self.session_serverhistory() as hsession:
                 for i in database:
-                    hsession.add(server_h(hostname=i.hostname, version=i.version, onplayer=i.onplayer))
+                    hsession.add(server_h(hostname=i.hostname, version=i.version,
+                                          onplayer=i.onplayer))
                 hsession.commit()
         with self.session_onlineservers() as session:
             session.query(onServer).delete()
