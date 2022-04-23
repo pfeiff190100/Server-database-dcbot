@@ -25,6 +25,10 @@ class Details():
             print(f"successfully got details from '{message}'")
         except IOError:
             try:
+                if len(message.split(":")) == 2:
+                    await debugmsg.edit(content="server was not reachable")
+                    print(f"failed to get details from {message}")
+                    return
                 server = MinecraftServer.lookup(message + ":25565")
                 await self.embed(ctx, server, message)
                 await debugmsg.delete()
