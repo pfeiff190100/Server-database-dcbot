@@ -26,7 +26,30 @@ class Listserver():
                 if server[1].find(properties) != -1:
                     self.data.append(server)
                     self.properties = properties
-        await self.embed(ctx)
+        elif option == "players":
+            database = editdatabase.Databasemanager().onserversget()
+            if len(properties.split("-")) > 1:
+                try:
+                    max = int(properties.split("-")[1])
+                    min = int(properties.split("-")[0])
+                    for server in database:
+                        if server[2] >= int(min) and server[2] <= int(max):
+                            self.data.append(server)
+                            self.properties = properties
+                    await self.embed(ctx)
+                except:
+                    await ctx.channel.send("no servers where found with the given properties")
+            else:
+                try:
+                    for server in database:
+                        if server[2] == int(properties):
+                            self.data.append(server)
+                            self.properties = properties
+                    await self.embed(ctx)
+                except:
+                    await ctx.channel.send("no servers where found with the given properties")
+        else:
+            await ctx.channel.send("unknown option given, options: -version, -players")
 
 
     async def embed(self, ctx):
