@@ -73,3 +73,8 @@ added players option to -list fixed a ping error when a port was added to port a
 
 working on -list, removed randomcmd because it was used as for testing as beginning, added onlinecmd, adjusted programm to mcstatus update, moved geolocation from a seperate file to a databasecmd because its a general command.
 
+### 27.04.2022
+
+#### 9:45 - 10:25
+
+Multithreaded player search

@@ -16,7 +16,6 @@ class CMD():
 
         self.data = []
         self.threadcounter = 0
-        self.players = ""
 
 
     async def onlinecmd(self, ctx):
@@ -59,6 +58,7 @@ class CMD():
     def getplayernames(self, server):
         """Looping through user query server (12 players) as long it doesnt have all playernames"""
         status = server.status()
+        self.threadcounter = 0
         online = status.players.online
 
         if online == 0 and status.players.sample is None:
@@ -77,10 +77,18 @@ class CMD():
                 return f"server modified responce: {self.players[0]}"
             while len(self.players) < online:
                 status = server.status()
-                for i in status.players.sample:
-                    if i.name not in self.players:
-                        self.players.append(i.name)
+                Thread(target=self.playersearch(status)).start()
+                while self.threadcounter > 200:
+                    time.sleep(0.1)
         return self.players
+
+    def playersearch(self, status):
+        """Loops through all players currently online in the server"""
+        self.threadcounter += 1
+        for i in status.players.sample:
+            if i.name not in self.players:
+                self.players.append(i.name)
+        self.threadcounter -= 1
 
 
     def geolocation(self, ipaddress):

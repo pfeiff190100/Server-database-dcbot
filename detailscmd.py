@@ -7,7 +7,6 @@ import discord
 from mcstatus import JavaServer
 
 import databasecmd
-import geolocation
 
 
 class Details():
