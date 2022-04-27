@@ -59,5 +59,17 @@ All playersnames of the curently selected server will be show if u use -details
 
 #### 09:45 - 10:35
 
--moved every command to a separete file added -list to show servers with specific properties
+moved every command to a separete file added -list to show servers with specific properties
+
+### 25.04.2022
+
+#### 7:20 - 7:50
+
+added players option to -list fixed a ping error when a port was added to port and wasnt reachable
+
+### 27.04.2022
+
+#### 7:50 - 9:30
+
+working on -list, removed randomcmd because it was used as for testing as beginning, added onlinecmd, adjusted programm to mcstatus update, moved geolocation from a seperate file to a databasecmd because its a general command.
 

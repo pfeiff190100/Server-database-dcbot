@@ -4,7 +4,7 @@ import os
 import urllib
 
 import discord
-from mcstatus import MinecraftServer
+from mcstatus import JavaServer
 
 import databasecmd
 import geolocation
@@ -19,7 +19,7 @@ class Details():
         """gets info about a specific server"""
         debugmsg = await ctx.channel.send("trying to get info about the server")
         try:
-            server = MinecraftServer.lookup(message)
+            server = JavaServer.lookup(message)
             await self.embed(ctx, server, message)
             await debugmsg.delete()
             print(f"successfully got details from '{message}'")
@@ -29,7 +29,7 @@ class Details():
                     await debugmsg.edit(content="server was not reachable")
                     print(f"failed to get details from {message}")
                     return
-                server = MinecraftServer.lookup(message + ":25565")
+                server = JavaServer.lookup(message + ":25565")
                 await self.embed(ctx, server, message)
                 await debugmsg.delete()
                 print(f"successfully got details from '{message}'")
@@ -61,7 +61,7 @@ class Details():
         embed.add_field(name=f"Players online ({status.players.online})",
                            value=databasecmd.CMD().getplayernames(server),
                            inline=False)
-        embed.add_field(name="Geolocation", value=geolocation.Serverlocation(hostname).main(),
+        embed.add_field(name="Geolocation", value=databasecmd.CMD().geolocation(hostname),
                            inline=False)
         embed.set_image(url='attachment://details.jpg')
         if img_data is not None:

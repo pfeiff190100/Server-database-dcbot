@@ -2,7 +2,7 @@
 import time
 from threading import Thread
 
-import discord
+import requests
 
 import editdatabase
 import serverlookup
@@ -17,14 +17,11 @@ class CMD():
         self.data = []
         self.threadcounter = 0
         self.players = ""
-        self.page = 0
-        self.msg = ""
 
 
     async def onlinecmd(self, ctx):
         """class to search through the hole database for servers with players online"""
         self.data.clear()
-        self.page = 0
         threadlengh = 10
         adresses = editdatabase.Databasemanager().all()
         outadresses = []
@@ -58,30 +55,6 @@ class CMD():
                 f"out of {editdatabase.Databasemanager().lengh()} use -online to view")
         editdatabase.Databasemanager().onserverssave(self.data)
 
-    async def showembed(self, ctx, message):
-        """shows a embed based on the database"""
-        self.data = editdatabase.Databasemanager().onserversget()
-
-        if message == "reverse":
-            self.data.sort(key=lambda x: int(x[2]))
-        elif message is None:
-            self.data.sort(key=lambda x: int(x[2]), reverse=True)
-
-        await self.onembed(ctx)
-
-    async def checkreaction(self, reaction, user):
-        """functions to handle reactions"""
-        if str(reaction.emoji) == "⬅️":
-            if self.page != 0:
-                self.page -= 1
-                await self.updatoneembed()
-                await reaction.message.remove_reaction(reaction.emoji, user)
-        if str(reaction.emoji) == "➡️":
-            if (self.page + 1) * 10 < len(self.data) - 1:
-                self.page += 1
-                await self.updatoneembed()
-            await reaction.message.remove_reaction(reaction.emoji, user)
-
 
     def getplayernames(self, server):
         """Looping through user query server (12 players) as long it doesnt have all playernames"""
@@ -109,38 +82,23 @@ class CMD():
                         self.players.append(i.name)
         return self.players
 
-    async def onembed(self, ctx):
-        """command to show embed"""
-        counter = self.page * 10
-        out = ""
-        pagelengh = 0
 
-        # embed for displaying info
-        embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with" +
-                                                           " players online", color=0xFF7373)
-        while counter < len(self.data) and pagelengh < 10:
-            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
-            counter += 1
-            pagelengh += 1
-        embed.add_field(name=f"Page: {self.page + 1}", value=out,
-                           inline=False)
-        self.msg = await ctx.channel.send(embed=embed)
-        await self.msg.add_reaction("⬅️")
-        await self.msg.add_reaction("➡️")
+    def geolocation(self, ipaddress):
+        """gets the geolocation of the server"""
 
-    async def updatoneembed(self):
-        """class to update embed on reaction"""
-        out = ""
-        pagelengh = 0
-        counter = self.page * 10
+        request_url = 'http://ip-api.com/json/' + ipaddress
+        response = requests.get(request_url).json()
 
-        embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with players online", color=0xFF7373)
-        while(counter < len(self.data) and pagelengh < 10):
-            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
-                   f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
-            counter += 1
-            pagelengh += 1
-        embededit.add_field(name=f"Page: {self.page + 1}", value=out,
-                            inline=False)
-        await self.msg.edit(embed=embededit)
-        out = None
+        if response['status'] == 'fail' and len(ipaddress.split(":")) > 1:
+            request_url = 'http://ip-api.com/json/' + ipaddress.split(":")[0]
+            response = requests.get(request_url).json()
+
+        georesult = response
+
+        if str(georesult['status']) == "success":
+            flag = ":flag_" +  georesult["countryCode"].lower() + ":"
+            return f"Country: {georesult['country']} {flag} | state: {georesult['regionName']}" + \
+                f"| city: {georesult['city']} | IPv4: {georesult['query']} \n" + \
+                f"ISP: {georesult['isp']} | timezone: {georesult['timezone']}"
+        elif str(georesult['status']) == "fail":
+            return f"failed to get geolocation of {self.georesult['query']}"

@@ -1,5 +1,5 @@
 """Module import"""
-from mcstatus import MinecraftServer
+from mcstatus import JavaServer
 
 class Ping():
     """ping minecraft server"""
@@ -15,7 +15,7 @@ class Ping():
         success = False
         while counter < self.threads:
             try:
-                server = MinecraftServer.lookup(self.hostname[counter] +
+                server = JavaServer.lookup(self.hostname[counter] +
                                                 ":25565")
                 status = server.status()
                 success = True

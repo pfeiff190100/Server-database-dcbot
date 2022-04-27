@@ -2,9 +2,9 @@
 from discord.ext import commands
 
 import databasecmd
-import randcmd
 import detailscmd
 import listcmd
+import onlinecmd
 
 
 class DCcmd(commands.Cog):
@@ -14,14 +14,9 @@ class DCcmd(commands.Cog):
         """init func"""
         self.client = client
         self.cmd = databasecmd.CMD()
-        self.randcmd = randcmd.Rand()
+        self.onlinecmd = onlinecmd.OnlineCmd()
         self.detailscmd = detailscmd.Details()
         self.listcmd = listcmd.Listserver()
-
-    @commands.command()
-    async def rand (self, ctx):
-        """command to get random servers out of database"""
-        await self.randcmd.main(ctx)
 
     @commands.command()
     async def onlinelookup (self, ctx):
@@ -31,7 +26,7 @@ class DCcmd(commands.Cog):
     @commands.command()
     async def online (self, ctx, message=None):
         """command to get servers with players online"""
-        await self.cmd.showembed(ctx, message)
+        await self.onlinecmd.showembed(ctx, message)
 
     @commands.command()
     async def details(self, ctx, message=None):
@@ -46,7 +41,7 @@ class DCcmd(commands.Cog):
     async def on_reaction(self, reaction, user):
         """on reaction"""
         if str(reaction.emoji) == "⬅️" or str(reaction.emoji) == "➡️":
-            await self.cmd.checkreaction(reaction, user)
+            await self.onlinecmd.checkreaction(reaction, user)
         elif str(reaction.emoji) == "⏮️" or str(reaction.emoji) == "⏭️":
             await self.listcmd.checkreaction(reaction, user)
 

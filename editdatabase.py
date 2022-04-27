@@ -35,7 +35,7 @@ class Databasemanager():
             return session.query(Server).count()
 
     def all(self):
-        """returns all entries of the database"""
+        """returns all hostnames entries of the database"""
         hostnames = []
         with self.session_servers() as session:
             database = session.query(Server).all()
@@ -44,7 +44,7 @@ class Databasemanager():
             return hostnames
 
     def onserverssave(self, data):
-        """saves online servers to a database"""
+        """saves online servers to a history database and then it adds the new entries to the online database"""
         database = ""
         lengh = 0
         with self.session_onlineservers() as session:
