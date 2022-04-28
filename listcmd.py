@@ -26,40 +26,47 @@ class Listserver():
                 if server[1].find(properties) != -1:
                     self.data.append(server)
                     self.properties = properties
+            await self.embed(ctx, "version") # embed for displaying info
         elif option == "players":
             database = editdatabase.Databasemanager().onserversget()
             try:
                 if len(properties.split("-")) > 1:
-                    maxplayers = int(properties.split("-")[1])
+                    maxplayers = int(properties.split("-")[1]) # splits up max min amount
                     minplayers = int(properties.split("-")[0])
-                    for server in database:
+                    for server in database: # search through every entriy in the database
                         if server[2] >= int(minplayers) and server[2] <= int(maxplayers):
                             self.data.append(server)
                             self.properties = properties
                     await self.embed(ctx)
                 else:
-                    for server in database:
+                    for server in database: # search through every entriy in the database
                         if server[2] == int(properties):
                             self.data.append(server)
                             self.properties = properties
-                    await self.embed(ctx)
+                    await self.embed(ctx, "players") # embed for displaying info
             except:
                 await ctx.channel.send("no servers were found with the given properties")
         else:
             await ctx.channel.send("unknown option given, options: -version, -players")
 
 
-    async def embed(self, ctx):
+    async def embed(self, ctx, cmd=None):
         """embed for list func"""
 
         counter = self.page * 10
         out = ""
         lenghcount = 0
+        embed = None
 
         # embed for displaying info
-        embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers" +
-                                                           "with the version " +
-                                                           f"{self.properties}", color=0xFF7373)
+        if cmd == "version":
+            embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers " +
+                                                            "with the version " +
+                                                            f"{self.properties}", color=0xFF0000)
+        elif cmd == "players":
+            embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers " +
+                                                            f"with {self.properties} players"
+                                                            , color=0xFF0000)
         while counter < len(self.data) and lenghcount < 10:
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
             counter += 1
@@ -78,7 +85,7 @@ class Listserver():
         counter = self.page * 10
 
         embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} with the" +
-                                                           f" version {self.properties}", color=0xFF7373)
+                                                               f" version {self.properties}", color=0xFF7373)
         while(counter < len(self.data) and lenghcount < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
                    f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"

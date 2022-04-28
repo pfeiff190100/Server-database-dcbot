@@ -78,3 +78,9 @@ working on -list, removed randomcmd because it was used as for testing as beginn
 #### 9:45 - 10:25
 
 Multithreaded player search
+
+### 28.04.2022
+
+#### 14:15 - 17:35
+
+Fixed embeds for -list players and version, moved databases and database structure files in a subdirectory, moved pingserver to a seprate file to automaticly ping every 1 hour 
