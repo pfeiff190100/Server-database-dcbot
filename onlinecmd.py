@@ -43,10 +43,13 @@ class OnlineCmd:
         pagelengh = 0
 
         # embed for displaying info
-        embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with" +
-                                                           " players online", color=0xFF7373)
+        embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers " +
+                                                    "which are online out of " +
+                                                    f"{editdatabase.Databasemanager().lengh()}",
+                                                    color=0x1FFF0F)
         while counter < len(self.data) and pagelengh < 10:
-            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
+            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
+                   f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
             counter += 1
             pagelengh += 1
         embed.add_field(name=f"Page: {self.page + 1}", value=out,
@@ -61,7 +64,10 @@ class OnlineCmd:
         pagelengh = 0
         counter = self.page * 10
 
-        embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} servers with players online", color=0xFF7373)
+        embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} servers " +
+                                                    "which are online out of " +
+                                                    f"{editdatabase.Databasemanager().lengh()}",
+                                                    color=0x1FFF0F)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
                    f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"

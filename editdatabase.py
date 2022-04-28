@@ -1,25 +1,25 @@
 """module imports"""
 import sqlalchemy
-from servers import Base, Server
-from onlineservers import Base as onBase, Server as onServer
-from serverhistory import Base as Base_h, Server as server_h
+from data.servers import Base, Server
+from data.onlineservers import Base as onBase, Server as onServer
+from data.serverhistory import Base as Base_h, Server as server_h
 
 class Databasemanager():
     """Databasemanage"""
 
     def __init__(self) -> None:
         """init func"""
-        db_servers = sqlalchemy.create_engine("sqlite:///servers.db")
+        db_servers = sqlalchemy.create_engine("sqlite:///data/servers.db")
         Base.metadata.create_all(db_servers)
         self.session_servers = sqlalchemy.orm.sessionmaker()
         self.session_servers.configure(bind=db_servers)
 
-        db_onlineservers = sqlalchemy.create_engine("sqlite:///onlineservers.db")
+        db_onlineservers = sqlalchemy.create_engine("sqlite:///data/onlineservers.db")
         onBase.metadata.create_all(db_onlineservers)
         self.session_onlineservers = sqlalchemy.orm.sessionmaker()
         self.session_onlineservers.configure(bind=db_onlineservers)
 
-        db_serverhistory = sqlalchemy.create_engine("sqlite:///serverhistory.db")
+        db_serverhistory = sqlalchemy.create_engine("sqlite:///data/serverhistory.db")
         Base_h.metadata.create_all(db_serverhistory)
         self.session_serverhistory = sqlalchemy.orm.sessionmaker()
         self.session_serverhistory.configure(bind=db_serverhistory)
