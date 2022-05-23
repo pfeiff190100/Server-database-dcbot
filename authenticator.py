@@ -9,7 +9,7 @@ import onlinecmd
 
 class DCcmd(commands.Cog):
     """discord commands"""
-
+ 
     def __init__(self, client):
         """init func"""
         self.client = client
