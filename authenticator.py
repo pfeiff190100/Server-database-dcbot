@@ -1,7 +1,7 @@
 """module imports"""
 from discord.ext import commands
 
-import databasecmd
+import onlineserverlookup
 import detailscmd
 import listcmd
 import onlinecmd
@@ -13,7 +13,7 @@ class DCcmd(commands.Cog):
     def __init__(self, client):
         """init func"""
         self.client = client
-        self.cmd = databasecmd.CMD()
+        self.onlookup = onlineserverlookup.Autolookup()
         self.onlinecmd = onlinecmd.OnlineCmd()
         self.detailscmd = detailscmd.Details()
         self.listcmd = listcmd.Listserver()
@@ -21,7 +21,7 @@ class DCcmd(commands.Cog):
     @commands.command()
     async def onlinelookup (self, ctx):
         """command to get servers with players online"""
-        await self.cmd.onlinecmd(ctx)
+        await self.onlookup.onlinecmd(ctx)
 
     @commands.command()
     async def online (self, ctx, message=None):
