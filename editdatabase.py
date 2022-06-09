@@ -59,7 +59,7 @@ class Databasemanager():
             session.commit()
 
     def onserversget(self):
-        """returns all entries of database"""
+        """returns all entries of database """
         serverinfo = []
         with self.session_onlineservers() as session:
             database = session.query(Onlineserver).all()
